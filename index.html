@@ -1,314 +1,263 @@
-// PPDD Website - Single File React Component (No Wallet/MetaMask dependencies)
-// Goal: Professional but casual site, resilient to environments where other scripts
-// might attempt wallet connections. Includes ErrorBoundary and a tiny in-browser
-// self-test suite so we can confirm the page renders and that we do NOT auto-connect
-// to any crypto wallet.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ping Pong Deep Dive, LLC | Business Intelligence Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-bg {
+            background-color: #111827; /* Dark Gray/Blue */
+            background-image: radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.2) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(234, 88, 12, 0.2) 0%, transparent 40%);
+        }
+        .cta-button {
+            transition: all 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .section-title {
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 4px;
+            border-radius: 2px;
+            background-color: #EA580C; /* Orange */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
 
-import { useEffect, useMemo, useRef, useState } from "react";
-
-/********************
- * Error Boundary
- ********************/
-function ErrorBoundary({ children }) {
-  const [error, setError] = useState(null);
-  if (error) {
-    return (
-      <div className="min-h-screen bg-red-50 text-red-900 p-6">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-2xl font-bold">Something went wrong</h1>
-          <p className="mt-2">The UI kept running into an error. We caught it so the whole site doesn't crash.</p>
-          <details className="mt-4 p-4 bg-white rounded-xl shadow">
-            <summary className="cursor-pointer font-semibold">Error details</summary>
-            <pre className="whitespace-pre-wrap text-sm mt-3">{String(error?.stack || error?.message || error)}</pre>
-          </details>
-          <button
-            className="mt-6 px-4 py-2 rounded-lg bg-gray-900 text-white"
-            onClick={() => location.reload()}
-          >
-            Reload
-          </button>
-        </div>
-      </div>
-    );
-  }
-  return (
-    <ErrorCatcher onError={setError}>{children}</ErrorCatcher>
-  );
-}
-
-function ErrorCatcher({ children, onError }) {
-  useEffect(() => {
-    const handler = (event) => {
-      // Intercept unhandled runtime errors so we can show a friendly screen
-      if (event?.error) {
-        onError(event.error);
-      }
-    };
-    const rej = (event) => {
-      if (event?.reason instanceof Error) onError(event.reason);
-    };
-    window.addEventListener("error", handler);
-    window.addEventListener("unhandledrejection", rej);
-    return () => {
-      window.removeEventListener("error", handler);
-      window.removeEventListener("unhandledrejection", rej);
-    };
-  }, [onError]);
-  return children;
-}
-
-/********************
- * MetaMask/Wallet Guard (non-invasive)
- * - We DO NOT connect to MetaMask.
- * - If any 3rd-party script elsewhere throws a MetaMask error, we surface it politely.
- ********************/
-function useWalletGuard() {
-  const [walletIssue, setWalletIssue] = useState(null);
-  useEffect(() => {
-    const markIfMetaMask = (msg) => {
-      const s = String(msg || "").toLowerCase();
-      if (s.includes("metamask") || s.includes("wallet")) {
-        setWalletIssue(msg);
-      }
-    };
-    const onErr = (e) => markIfMetaMask(e?.error?.message || e?.message || e);
-    const onRej = (e) => markIfMetaMask(e?.reason?.message || e?.reason || e);
-    window.addEventListener("error", onErr);
-    window.addEventListener("unhandledrejection", onRej);
-    return () => {
-      window.removeEventListener("error", onErr);
-      window.removeEventListener("unhandledrejection", onRej);
-    };
-  }, []);
-  return walletIssue;
-}
-
-/********************
- * Tiny Self-Test Panel (in-page, no libs)
- ********************/
-function SelfTests() {
-  const [results, setResults] = useState(null);
-  const [open, setOpen] = useState(false);
-  const run = () => {
-    const cases = [
-      {
-        name: "Header renders brand",
-        test: () => !!document.querySelector("header .ppdd-brand"),
-      },
-      {
-        name: "Sections exist (services/about/contact)",
-        test: () =>
-          ["#services", "#about", "#contact"].every((sel) => !!document.querySelector(sel)),
-      },
-      {
-        name: "No auto wallet connect flag",
-        test: () => window.__ppdd_walletConnectAttempted !== true,
-      },
-      {
-        name: "CTA buttons present",
-        test: () =>
-          Array.from(document.querySelectorAll("button,a")).some((el) => /let’s talk|email us/i.test(el.textContent || "")),
-      },
-    ];
-    const out = cases.map((c) => {
-      let pass = false;
-      let err = null;
-      try {
-        pass = !!c.test();
-      } catch (e) {
-        err = e;
-      }
-      return { name: c.name, pass, err };
-    });
-    setResults(out);
-  };
-  useEffect(() => {
-    // Auto-run tests if URL has ?dev=1
-    if (typeof window !== "undefined" && new URLSearchParams(location.search).get("dev") === "1") {
-      setOpen(true);
-      run();
-    }
-  }, []);
-  return (
-    <div className="fixed bottom-4 right-4 z-50">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="px-3 py-2 rounded-lg shadow bg-white border border-gray-200 text-sm"
-      >
-        {open ? "Close" : "Open"} Dev Panel
-      </button>
-      {open && (
-        <div className="mt-2 w-80 max-w-[90vw] bg-white rounded-2xl shadow-xl border border-gray-200 p-3">
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold">Self Tests</h4>
-            <button onClick={run} className="text-xs px-2 py-1 rounded bg-gray-900 text-white">Run</button>
-          </div>
-          <div className="mt-2 text-xs text-gray-600">
-            Quick checks that the page renders and no wallet auto-connect is attempted.
-          </div>
-          {results && (
-            <ul className="mt-3 space-y-2">
-              {results.map((r, i) => (
-                <li key={i} className={`p-2 rounded ${r.pass ? "bg-green-50" : "bg-red-50"}`}>
-                  <div className="font-medium">{r.name}</div>
-                  <div className="text-xs mt-1">{r.pass ? "PASS" : "FAIL"}</div>
-                  {!r.pass && r.err && (
-                    <pre className="mt-1 text-[10px] whitespace-pre-wrap">{String(r.err)}</pre>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/********************
- * UI Bits
- ********************/
-function Section({ id, className = "", children }) {
-  return (
-    <section id={id} className={`py-16 ${className}`}>{children}</section>
-  );
-}
-
-function Card({ title, children }) {
-  return (
-    <div className="shadow-lg rounded-2xl bg-white border border-gray-100">
-      <div className="p-6">
-        <h4 className="text-xl font-semibold mb-3">{title}</h4>
-        <div className="text-gray-700">{children}</div>
-      </div>
-    </div>
-  );
-}
-
-function PrimaryButton({ as: As = "button", href, onClick, children }) {
-  const className = "inline-flex items-center justify-center px-5 py-3 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition";
-  return href ? (
-    <As href={href} className={className} onClick={onClick}>{children}</As>
-  ) : (
-    <button className={className} onClick={onClick}>{children}</button>
-  );
-}
-
-function GhostLink({ href, children }) {
-  return (
-    <a href={href} className="hover:text-blue-600 transition">{children}</a>
-  );
-}
-
-/********************
- * Main App
- ********************/
-export default function Home() {
-  // Prevent any accidental wallet auto-connect attempts from this file.
-  // (External scripts may still try; our guard will surface that politely.)
-  useEffect(() => {
-    window.__ppdd_walletConnectAttempted = false;
-  }, []);
-
-  const walletIssue = useWalletGuard();
-  const year = useMemo(() => new Date().getFullYear(), []);
-  const contactRef = useRef(null);
-
-  const scrollToContact = () => {
-    contactRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  return (
-    <ErrorBoundary>
-      <div className="min-h-screen bg-gray-50 text-gray-800">
-        {/* Header */}
-        <header className="bg-white shadow-md p-6 flex justify-between items-center sticky top-0 z-40">
-          <h1 className="ppdd-brand text-2xl font-bold text-blue-600">Ping Pong Deep Dive, LLC</h1>
-          <nav className="space-x-6 text-sm">
-            <GhostLink href="#services">Services</GhostLink>
-            <GhostLink href="#about">About</GhostLink>
-            <GhostLink href="#contact">Contact</GhostLink>
-          </nav>
-        </header>
-
-        {/* Hero */}
-        <Section className="text-center bg-gradient-to-r from-blue-50 to-blue-100">
-          <h2 className="text-4xl font-extrabold text-gray-900">Business Intelligence, Simplified</h2>
-          <p className="mt-4 text-lg max-w-2xl mx-auto">
-            At PPDD, we take the complexity out of data and serve up insights that hit home—like a perfect ping pong rally.
-          </p>
-          <div className="mt-6 flex justify-center gap-3">
-            <PrimaryButton onClick={scrollToContact}>Let’s Talk</PrimaryButton>
-            <a href="#services" className="px-5 py-3 rounded-xl bg-white border border-gray-200 hover:bg-gray-50">Explore Services</a>
-          </div>
-        </Section>
-
-        {/* Optional wallet warning if some other script in the environment errors out */}
-        {walletIssue && (
-          <div className="max-w-4xl mx-auto px-6">
-            <div className="p-4 rounded-xl bg-yellow-50 border border-yellow-200 text-yellow-900">
-              <div className="font-semibold">Heads up</div>
-              <p className="text-sm mt-1">
-                We detected a wallet-related error from another script in this environment: <em>{String(walletIssue)}</em>.
-                PPDD's site doesn’t require MetaMask or any wallet. The page is safe to use; you can ignore this or disable any wallet auto-connect scripts in your project.
-              </p>
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-gray-900">
+                PPDD<span class="text-blue-600">.</span>
+            </a>
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#about" class="text-gray-600 hover:text-blue-600 transition">About</a>
+                <a href="#services" class="text-gray-600 hover:text-blue-600 transition">Services</a>
+                <a href="#why-us" class="text-gray-600 hover:text-blue-600 transition">Why Us?</a>
+                <a href="#contact" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Contact Us</a>
             </div>
-          </div>
-        )}
+            <button id="mobile-menu-button" class="md:hidden">
+                <i data-lucide="menu"></i>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#about" class="block py-2 text-gray-600 hover:text-blue-600">About</a>
+            <a href="#services" class="block py-2 text-gray-600 hover:text-blue-600">Services</a>
+            <a href="#why-us" class="block py-2 text-gray-600 hover:text-blue-600">Why Us?</a>
+            <a href="#contact" class="block mt-2 bg-blue-600 text-white text-center px-4 py-2 rounded-md hover:bg-blue-700">Contact Us</a>
+        </div>
+    </header>
 
-        {/* Services */}
-        <Section id="services" className="max-w-5xl mx-auto px-6">
-          <h3 className="text-3xl font-bold text-center mb-10">Our Services</h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card title="Data Strategy">
-              We help you build a roadmap so your data works for you, not against you.
-            </Card>
-            <Card title="Dashboards">
-              Custom dashboards that tell your story at a glance—no jargon, just clarity.
-            </Card>
-            <Card title="Analytics">
-              Dive deep into trends and insights to make smarter decisions, faster.
-            </Card>
-          </div>
-        </Section>
-
-        {/* About */}
-        <Section id="about" className="bg-gray-100 px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <h3 className="text-3xl font-bold mb-6">About PPDD</h3>
-            <p>
-              Founded with the belief that data should be approachable, Ping Pong Deep Dive, LLC combines sharp business intelligence with a human touch. We partner with companies big and small to transform numbers into narratives.
-            </p>
-          </div>
-        </Section>
-
-        {/* Contact */}
-        <Section id="contact" className="px-6" >
-          <div ref={contactRef} className="max-w-3xl mx-auto text-center">
-            <h3 className="text-3xl font-bold mb-6">Let’s Connect</h3>
-            <p className="mb-6">Whether you’re curious or ready to dive in, we’d love to hear from you.</p>
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              <PrimaryButton as="a" href="mailto:hello@pingpongdeepdive.com?subject=PPDD%20Inquiry">Email Us</PrimaryButton>
-              <a
-                href="https://cal.com/"
-                target="_blank"
-                rel="noreferrer"
-                className="px-5 py-3 rounded-xl bg-white border border-gray-200 hover:bg-gray-50"
-              >
-                Book a Call
-              </a>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-bg text-white py-20 md:py-32">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4">Turn Data into Dialogue.</h1>
+                <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">Ping Pong Deep Dive is your partner in Business Intelligence. We volley ideas and dive deep into your data to serve up winning strategies.</p>
+                <a href="#contact" class="cta-button bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-8 rounded-lg text-lg">Start the Rally</a>
             </div>
-          </div>
-        </Section>
+        </section>
 
-        {/* Footer */}
-        <footer className="bg-gray-900 text-gray-200 text-center py-6 mt-10">
-          <p>© {year} Ping Pong Deep Dive, LLC. All rights reserved.</p>
-        </footer>
+        <!-- About Us Section -->
+        <section id="about" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="section-title text-3xl font-bold text-gray-900">Who We Are</h2>
+                </div>
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/2">
+                        <img src="https://placehold.co/600x400/3B82F6/FFFFFF?text=PPDD+Team" alt="A team collaborating around a table with charts" class="rounded-lg shadow-xl">
+                    </div>
+                    <div class="md:w-1/2">
+                        <h3 class="text-2xl font-bold mb-4">More Than Just Analysts. We're Your BI Teammates.</h3>
+                        <p class="text-gray-600 mb-4">
+                            At Ping Pong Deep Dive (PPDD), we believe the best insights come from collaboration. Like a good game of ping pong, our process is about quick back-and-forth, adapting to new spins, and keeping our eye on the goal.
+                        </p>
+                        <p class="text-gray-600">
+                            We're a team of passionate data professionals who get a genuine thrill from uncovering the stories hidden in your numbers. We skip the corporate jargon and focus on clear, actionable intelligence that helps you make smarter, faster decisions.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        {/* Dev/Test panel */}
-        <SelfTests />
-      </div>
-    </ErrorBoundary>
-  );
-}
+        <!-- Services Section -->
+        <section id="services" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="section-title text-3xl font-bold text-gray-900">What We Serve Up</h2>
+                    <p class="text-gray-600 mt-4 max-w-2xl mx-auto">From raw data to refined strategy, we've got the full court covered.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Service Card 1 -->
+                    <div class="bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 text-blue-600 mb-6">
+                            <i data-lucide="bar-chart-3"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Interactive Dashboards</h3>
+                        <p class="text-gray-600">We build dynamic, easy-to-understand dashboards (Tableau, Power BI) that put key metrics at your fingertips.</p>
+                    </div>
+                    <!-- Service Card 2 -->
+                    <div class="bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 text-blue-600 mb-6">
+                            <i data-lucide="database"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Data Warehousing & ETL</h3>
+                        <p class="text-gray-600">We structure, clean, and pipeline your data, creating a single source of truth for reliable reporting.</p>
+                    </div>
+                    <!-- Service Card 3 -->
+                    <div class="bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 text-blue-600 mb-6">
+                            <i data-lucide="search"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Deep Dive Analysis</h3>
+                        <p class="text-gray-600">Got a tough business question? We'll dig into your data to find the root causes and opportunities you've been missing.</p>
+                    </div>
+                    <!-- Service Card 4 -->
+                    <div class="bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 text-blue-600 mb-6">
+                            <i data-lucide="lightbulb"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">BI Strategy & Roadmapping</h3>
+                        <p class="text-gray-600">We help you build a long-term vision for your data culture, from tool selection to team training.</p>
+                    </div>
+                    <!-- Service Card 5 -->
+                    <div class="bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 text-blue-600 mb-6">
+                            <i data-lucide="trending-up"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Predictive Analytics</h3>
+                        <p class="text-gray-600">Leverage historical data to forecast future trends, helping you stay ahead of the competition.</p>
+                    </div>
+                    <!-- Service Card 6 -->
+                    <div class="bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 text-blue-600 mb-6">
+                            <i data-lucide="file-text"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Custom Reporting</h3>
+                        <p class="text-gray-600">Automated, insightful reports delivered to your inbox, so you're always informed.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Us Section -->
+        <section id="why-us" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="section-title text-3xl font-bold text-gray-900">The PPDD Advantage</h2>
+                </div>
+                <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-10">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-orange-100 text-orange-600">
+                            <i data-lucide="repeat"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold">The "Ping Pong" Philosophy</h3>
+                            <p class="text-gray-600 mt-1">Our agile, iterative process means we're constantly collaborating with you. No long waits, no big reveals—just continuous progress.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-orange-100 text-orange-600">
+                            <i data-lucide="users"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold">Business-First Approach</h3>
+                            <p class="text-gray-600 mt-1">We're not just data technicians; we're business strategists. We focus on the "so what?" behind the data to drive real-world results.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-orange-100 text-orange-600">
+                            <i data-lucide="glasses"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold">Radical Clarity</h3>
+                            <p class="text-gray-600 mt-1">We translate complex data into simple, compelling stories. If you can't understand it, we haven't done our job.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-orange-100 text-orange-600">
+                            <i data-lucide="puzzle"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold">Your Extended Team</h3>
+                            <p class="text-gray-600 mt-1">We integrate seamlessly with your existing team, providing the expertise you need, right when you need it.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 bg-gray-800 text-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="section-title text-3xl font-bold">Ready to Play?</h2>
+                    <p class="text-gray-300 mt-4 max-w-2xl mx-auto">Let's talk about how a Ping Pong Deep Dive can unlock your business's potential. The first conversation is on us.</p>
+                </div>
+                <div class="max-w-xl mx-auto bg-white text-gray-800 rounded-lg shadow-2xl p-8">
+                    <form>
+                        <div class="mb-4">
+                            <label for="name" class="block text-gray-700 font-medium mb-2">Full Name</label>
+                            <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="block text-gray-700 font-medium mb-2">Email Address</label>
+                            <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-700 font-medium mb-2">How can we help?</label>
+                            <textarea id="message" name="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-6 rounded-lg transition-transform transform hover:scale-105">
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2024 Ping Pong Deep Dive, LLC. All Rights Reserved.</p>
+            <p class="text-sm mt-2">Serving up insights, one deep dive at a time.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+
+</body>
+</html>
