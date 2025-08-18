@@ -3,383 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ping Pong Deep Dive, LLC - AI & BI Services</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Ping Pong Deep Dive, LLC (PPDD)</title>
+    <link rel="stylesheet" href="styles.css">
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'ppdd-blue': '#2A3F54',
-                        'ppdd-green': '#4F7942',
-                        'ppdd-light-gray': '#F0F0F0',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                },
-            },
-        };
-    </script>
-    <style>
-        /* Simple transition for smooth effects */
-        .smooth-transition {
-            transition: all 0.3s ease-in-out;
-        }
-        /* Active nav link style */
-        .nav-link.active {
-            color: #4F7942; /* PPDD Green */
-            font-weight: 600;
-        }
-        /* Page container for consistent padding */
-        .page-container {
-            padding: 4rem 1.5rem;
-        }
-        @media (min-width: 768px) {
-            .page-container {
-                padding: 6rem 2rem;
-            }
-        }
-    </style>
-</head>
-<body class="bg-ppdd-light-gray font-sans text-ppdd-blue">
-
-    <!-- Header & Navigation -->
-    <header class="bg-white/80 backdrop-blur-md shadow-sm fixed top-0 left-0 right-0 z-50">
-        <div class="container mx-auto px-6 py-3">
-            <div class="flex items-center justify-between">
-                <a href="#home" class="flex items-center space-x-3 nav-link" data-page="home">
-                    <img src="http://googleusercontent.com/file_content/0" alt="PPDD Logo" class="h-10 w-10 rounded-md" onerror="this.onerror=null;this.src='https://placehold.co/40x40/2A3F54/FFFFFF?text=PPDD';">
-                    <span class="text-xl font-bold text-ppdd-blue">Ping Pong Deep Dive</span>
-                </a>
-
-                <!-- Desktop Navigation -->
-                <nav class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="text-gray-600 hover:text-ppdd-green smooth-transition nav-link active" data-page="home">Home</a>
-                    <a href="#about" class="text-gray-600 hover:text-ppdd-green smooth-transition nav-link" data-page="about">About Us</a>
-                    <a href="#services" class="text-gray-600 hover:text-ppdd-green smooth-transition nav-link" data-page="services">Services</a>
-                    <a href="#order" class="text-gray-600 hover:text-ppdd-green smooth-transition nav-link" data-page="order">Order Now</a>
-                    <a href="#contact" class="text-gray-600 hover:text-ppdd-green smooth-transition nav-link" data-page="contact">Contact</a>
-                </nav>
-
-                <!-- Mobile Menu Button -->
-                <button id="mobile-menu-button" class="md:hidden text-ppdd-blue focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                </button>
-            </div>
-
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden mt-4">
-                <a href="#home" class="block py-2 px-4 text-sm text-gray-600 hover:bg-ppdd-green hover:text-white rounded nav-link active" data-page="home">Home</a>
-                <a href="#about" class="block py-2 px-4 text-sm text-gray-600 hover:bg-ppdd-green hover:text-white rounded nav-link" data-page="about">About Us</a>
-                <a href="#services" class="block py-2 px-4 text-sm text-gray-600 hover:bg-ppdd-green hover:text-white rounded nav-link" data-page="services">Services</a>
-                <a href="#order" class="block py-2 px-4 text-sm text-gray-600 hover:bg-ppdd-green hover:text-white rounded nav-link" data-page="order">Order Now</a>
-                <a href="#contact" class="block py-2 px-4 text-sm text-gray-600 hover:bg-ppdd-green hover:text-white rounded nav-link" data-page="contact">Contact</a>
-            </div>
-        </div>
-    </header>
-
-    <main id="main-content">
-        <!-- Page content will be injected here -->
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-ppdd-blue text-white">
-        <div class="container mx-auto px-6 py-8">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <p class="text-center md:text-left">&copy; 2025 Ping Pong Deep Dive, LLC. All rights reserved.</p>
-                <div class="flex mt-4 md:mt-0 space-x-6">
-                    <a href="#" class="hover:text-ppdd-green smooth-transition">Twitter</a>
-                    <a href="#" class="hover:text-ppdd-green smooth-transition">LinkedIn</a>
-                    <a href="#" class="hover:text-ppdd-green smooth-transition">GitHub</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Page Templates -->
-    <template id="template-home">
-        <div class="page-container text-center bg-white">
-            <div class="container mx-auto">
-                <h1 class="text-4xl md:text-6xl font-bold mb-4 animate-fade-in-down">Your Business, Supercharged.</h1>
-                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8 animate-fade-in-up">We dive deep into your data and processes, surfacing with AI-powered automation and crystal-clear business intelligence to help you win.</p>
-                <div class="space-x-4">
-                    <a href="#services" class="bg-ppdd-green text-white font-bold py-3 px-8 rounded-lg hover:bg-opacity-90 smooth-transition shadow-lg nav-link" data-page="services">Our Services</a>
-                    <a href="#contact" class="bg-gray-200 text-ppdd-blue font-bold py-3 px-8 rounded-lg hover:bg-gray-300 smooth-transition shadow-lg nav-link" data-page="contact">Get in Touch</a>
-                </div>
-            </div>
-        </div>
-    </template>
-
-    <template id="template-about">
-        <div class="page-container bg-white">
-            <div class="container mx-auto">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Who We Are</h2>
-                <div class="flex flex-col md:flex-row items-center gap-12">
-                    <div class="md:w-1/2">
-                        <img src="https://placehold.co/600x400/F0F0F0/2A3F54?text=Our+Team" alt="PPDD Team" class="rounded-lg shadow-xl">
-                    </div>
-                    <div class="md:w-1/2">
-                        <h3 class="text-2xl font-semibold mb-4 text-ppdd-green">Just a couple of data nerds.</h3>
-                        <p class="text-gray-600 mb-4">Ping Pong Deep Dive started with a simple idea: what if understanding your business data wasn't a chore? What if your repetitive tasks could just... disappear? We're a small, passionate team of AI specialists and BI experts who love solving puzzles.</p>
-                        <p class="text-gray-600 mb-4">We're not about buzzwords or complicated charts. We're about delivering real, tangible results that save you time, reduce costs, and give you the clarity to make smarter decisions. Think of us as your in-house data team, without the overhead.</p>
-                        <a href="#contact" class="text-ppdd-green font-semibold hover:underline nav-link" data-page="contact">Let's chat about your goals &rarr;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </template>
-
-    <template id="template-services">
-        <div class="page-container">
-            <div class="container mx-auto">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">What We Do</h2>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <!-- AI Automation Card -->
-                    <div class="bg-white p-8 rounded-lg shadow-lg">
-                        <h3 class="text-2xl font-bold mb-4 text-ppdd-green">AI Automation</h3>
-                        <p class="text-gray-600 mb-6">Tired of the daily grind? We build custom AI agents to handle your repetitive, time-consuming tasks. From data entry and email sorting to complex workflow management, we set you free to focus on what truly matters.</p>
-                        <ul class="list-disc list-inside text-gray-600 space-y-2">
-                            <li>Automated Customer Support Responses</li>
-                            <li>Intelligent Data Scraping & Entry</li>
-                            <li>Process & Workflow Automation</li>
-                            <li>Custom AI Tool Integration</li>
-                        </ul>
-                    </div>
-                    <!-- BI Services Card -->
-                    <div class="bg-white p-8 rounded-lg shadow-lg">
-                        <h3 class="text-2xl font-bold mb-4 text-ppdd-blue">Business Intelligence Services</h3>
-                        <p class="text-gray-600 mb-6">Your data is telling a story. We help you listen. We'll transform your raw numbers into interactive dashboards and actionable insights, giving you a clear view of your business performance.</p>
-                        <ul class="list-disc list-inside text-gray-600 space-y-2">
-                            <li>Custom Performance Dashboards</li>
-                            <li>Sales & Marketing Analytics</li>
-                            <li>Operational Efficiency Reports</li>
-                            <li>Data Cleaning & Visualization</li>
-                        </ul>
-                    </div>
-                </div>
-                 <div class="text-center mt-12">
-                    <a href="#order" class="bg-ppdd-green text-white font-bold py-3 px-8 rounded-lg hover:bg-opacity-90 smooth-transition shadow-lg nav-link" data-page="order">Ready to Get Started?</a>
-                </div>
-            </div>
-        </div>
-    </template>
-
-    <template id="template-order">
-        <div class="page-container">
-            <div class="container mx-auto max-w-4xl">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-2">Place Your Order</h2>
-                <p class="text-center text-gray-600 mb-10">Choose a package that works for you. Let's get started!</p>
-                
-                <div class="bg-white p-8 rounded-lg shadow-xl">
-                    <div id="order-form">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                            <!-- Service Selection -->
-                            <div>
-                                <label for="service-package" class="block text-sm font-medium text-gray-700 mb-2">Select a Service Package:</label>
-                                <select id="service-package" name="service-package" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ppdd-green focus:border-ppdd-green">
-                                    <option value="0" disabled selected>-- Choose an option --</option>
-                                    <option value="1500">BI Dashboard Starter Pack - $1,500</option>
-                                    <option value="2500">AI Automation Basic - $2,500</option>
-                                    <option value="5000">Combined AI & BI Package - $5,000</option>
-                                    <option value="10000">Enterprise Deep Dive - $10,000+</option>
-                                </select>
-                            </div>
-                            <!-- Total Amount -->
-                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Total Amount:</label>
-                                <p id="total-amount" class="text-3xl font-bold text-ppdd-blue">$0.00</p>
-                            </div>
-                        </div>
-
-                        <!-- Payment Options -->
-                        <div id="payment-options" class="hidden">
-                            <h3 class="text-lg font-semibold mb-4 border-t pt-6">Payment Method</h3>
-                            <div class="flex flex-col md:flex-row gap-4">
-                                <!-- PayPal Button -->
-                                <button id="paypal-btn" class="flex-1 bg-[#00457C] text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center hover:bg-[#003057] smooth-transition">
-                                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M7.5,3.54C7.5,3.54 8.42,3.54 10.23,3.54C14.5,3.54 16.5,5.63 16.5,9.15C16.5,12.67 14.5,14.76 10.23,14.76H8.42V17.5H7.5V3.54M13.06,9.15C13.06,7.34 11.94,6.54 10.23,6.54H9.54V11.76H10.23C11.94,11.76 13.06,10.96 13.06,9.15M17,3.54L17.5,3.54C19.5,3.54 20.5,4.05 20.5,5.13C20.5,6.21 19.5,6.72 17.5,6.72H17V3.54M17,7.72H18C19.5,7.72 21,8.22 21,10C21,11.78 19.5,12.28 18,12.28H17V7.72M21.5,3.54L22.5,3.54C24,3.54 24,4.5 24,4.5C24,5.25 23.5,5.5 23,5.63C23.75,5.75 24,6.25 24,7.25C24,8.5 22.75,8.75 21.5,8.75H21V3.54Z"></path></svg>
-                                    Pay with PayPal
-                                </button>
-                                <!-- Credit Card Button -->
-                                <button id="credit-card-btn" class="flex-1 bg-ppdd-green text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center hover:bg-opacity-90 smooth-transition">
-                                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-                                    Pay with Credit Card
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Credit Card Form (hidden by default) -->
-                    <div id="credit-card-form" class="hidden mt-8">
-                         <h3 class="text-lg font-semibold mb-4 border-t pt-6">Enter Card Details</h3>
-                         <div class="space-y-4">
-                             <input type="text" placeholder="Card Number" class="w-full p-3 border rounded-lg">
-                             <div class="flex gap-4">
-                                 <input type="text" placeholder="MM / YY" class="w-1/2 p-3 border rounded-lg">
-                                 <input type="text" placeholder="CVC" class="w-1/2 p-3 border rounded-lg">
-                             </div>
-                             <input type="text" placeholder="Name on Card" class="w-full p-3 border rounded-lg">
-                             <button class="w-full bg-ppdd-blue text-white font-bold py-3 rounded-lg hover:bg-opacity-90 smooth-transition">Submit Payment</button>
-                             <button id="back-to-payment" class="w-full text-center mt-2 text-sm text-gray-500 hover:underline">Go Back</button>
-                         </div>
-                    </div>
-
-                    <!-- Confirmation Message -->
-                    <div id="confirmation-message" class="hidden text-center py-10">
-                        <h3 class="text-2xl font-bold text-ppdd-green mb-4">Thank You!</h3>
-                        <p class="text-gray-600">Your order has been received. We'll be in touch shortly to start the deep dive!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </template>
-
-    <template id="template-contact">
-        <div class="page-container">
-            <div class="container mx-auto max-w-2xl">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-2">Let's Talk</h2>
-                <p class="text-center text-gray-600 mb-10">Have a question or a project in mind? Drop us a line.</p>
-                <div class="bg-white p-8 rounded-lg shadow-xl">
-                    <form>
-                        <div class="mb-5">
-                            <label for="name" class="block mb-2 text-sm font-medium text-gray-700">Full Name</label>
-                            <input type="text" id="name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ppdd-green">
-                        </div>
-                        <div class="mb-5">
-                            <label for="email" class="block mb-2 text-sm font-medium text-gray-700">Email Address</label>
-                            <input type="email" id="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ppdd-green">
-                        </div>
-                        <div class="mb-5">
-                            <label for="message" class="block mb-2 text-sm font-medium text-gray-700">Message</label>
-                            <textarea id="message" rows="5" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ppdd-green"></textarea>
-                        </div>
-                        <button type="submit" class="w-full bg-ppdd-green text-white font-bold py-3 rounded-lg hover:bg-opacity-90 smooth-transition">Send Message</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </template>
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const mainContent = document.getElementById('main-content');
-            const navLinks = document.querySelectorAll('.nav-link');
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-
-            // --- Page Navigation Logic ---
-            const pages = {
-                home: document.getElementById('template-home').innerHTML,
-                about: document.getElementById('template-about').innerHTML,
-                services: document.getElementById('template-services').innerHTML,
-                order: document.getElementById('template-order').innerHTML,
-                contact: document.getElementById('template-contact').innerHTML,
-            };
-
-            function navigateTo(page) {
-                // Hide mobile menu on navigation
-                mobileMenu.classList.add('hidden');
-
-                // Update content
-                mainContent.innerHTML = pages[page];
-                // window.location.hash = page; // This line causes security errors in sandboxed environments
-                
-                // Update active link
-                navLinks.forEach(link => {
-                    link.classList.toggle('active', link.dataset.page === page);
-                });
-
-                // Re-initialize event listeners for the new page content
-                if (page === 'order') {
-                    initializeOrderPage();
-                }
-            }
-
-            // --- Mobile Menu Toggle ---
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-
-            // --- Event delegation for nav links ---
-            document.body.addEventListener('click', (e) => {
-                // Use .closest() to handle clicks on child elements of the link (like the image)
-                const navLink = e.target.closest('.nav-link');
-                if (navLink) {
-                    e.preventDefault();
-                    const page = navLink.dataset.page;
-                    if (page) {
-                        navigateTo(page);
-                    }
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('section').forEach(sec => {
+                if (sec.getBoundingClientRect().top < window.innerHeight - 100) {
+                    sec.classList.add('visible');
                 }
             });
-
-            // --- Initial Page Load ---
-            const initialPage = window.location.hash.substring(1) || 'home';
-            navigateTo(initialPage);
-
-            // --- Order Page Specific Logic ---
-            function initializeOrderPage() {
-                const servicePackage = document.getElementById('service-package');
-                const totalAmount = document.getElementById('total-amount');
-                const paymentOptions = document.getElementById('payment-options');
-                const creditCardBtn = document.getElementById('credit-card-btn');
-                const creditCardForm = document.getElementById('credit-card-form');
-                const orderForm = document.getElementById('order-form');
-                const confirmationMessage = document.getElementById('confirmation-message');
-                const backToPaymentBtn = document.getElementById('back-to-payment');
-                const paypalBtn = document.getElementById('paypal-btn');
-                
-                // Get the credit card form's submit button
-                const submitPaymentBtn = creditCardForm ? creditCardForm.querySelector('button[class*="bg-ppdd-blue"]') : null;
-
-
-                if (servicePackage) {
-                    servicePackage.addEventListener('change', (e) => {
-                        const value = parseFloat(e.target.value);
-                        if (value > 0) {
-                            totalAmount.textContent = `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                            paymentOptions.classList.remove('hidden');
-                        } else {
-                            totalAmount.textContent = '$0.00';
-                            paymentOptions.classList.add('hidden');
-                        }
-                    });
-                }
-
-                if (creditCardBtn) {
-                    creditCardBtn.addEventListener('click', () => {
-                        orderForm.classList.add('hidden');
-                        creditCardForm.classList.remove('hidden');
-                    });
-                }
-
-                if(backToPaymentBtn) {
-                    backToPaymentBtn.addEventListener('click', () => {
-                        creditCardForm.classList.add('hidden');
-                        orderForm.classList.remove('hidden');
-                    });
-                }
-                
-                // Simulate payment submission
-                if(submitPaymentBtn) {
-                    submitPaymentBtn.addEventListener('click', (e) => {
-                        e.preventDefault(); // Prevent actual form submission
-                        creditCardForm.classList.add('hidden');
-                        confirmationMessage.classList.remove('hidden');
-                    });
-                }
-                
-                if (paypalBtn) {
-                    paypalBtn.addEventListener('click', () => {
-                        orderForm.classList.add('hidden');
-                        confirmationMessage.classList.remove('hidden');
-                    });
-                }
-            }
         });
     </script>
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="PPDD Logo" class="logo">
+        <nav>
+            <ul>
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="order.html">Order</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <h2>Welcome to PPDD!</h2>
+        <p>Hey, we're your go-to crew for AI automation and business intelligence. Like a deep dive into ping pong strategy, we make your data play smarter—so you can focus on the wins. Casual chats, pro results.</p>
+        <a href="order.html"><button>Get Started</button></a>
+    </section>
+
+    <section id="about">
+        <h2>About Us</h2>
+        <p>PPDD blends fun and tech. We're data nerds who love ping pong, bringing that energy to AI and BI. No corporate jargon—just straightforward solutions to amp up your biz.</p>
+    </section>
+
+    <section id="services">
+        <h2>Our Services</h2>
+        <div class="cards">
+            <div class="card">
+                <h3>AI Automation</h3>
+                <p>Streamline workflows with smart AI bots. Save time, reduce hassle.</p>
+            </div>
+            <div class="card">
+                <h3>Business Intelligence</h3>
+                <p>Unlock insights with custom dashboards and analytics.</p>
+            </div>
+            <div class="card">
+                <h3>Custom Solutions</h3>
+                <p>Tailored AI tools to fit your exact needs.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Get in Touch</h2>
+        <p>Shoot us an email at info@ppdd.com or ping us on social. Let's talk data over virtual ping pong!</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Ping Pong Deep Dive, LLC. All rights reserved.</p>
+    </footer>
 </body>
 </html>
