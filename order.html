@@ -5,11 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Services - PPDD</title>
     <link rel="stylesheet" href="styles.css">
+    <script>
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('section').forEach(sec => {
+                if (sec.getBoundingClientRect().top < window.innerHeight - 100) {
+                    sec.classList.add('visible');
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <header>
         <img src="logo.png" alt="PPDD Logo" class="logo">
-        <h1>Order Your PPDD Services</h1>
         <nav>
             <ul>
                 <li><a href="index.html">Home</a></li>
@@ -21,39 +29,40 @@
 
     <section id="order-form">
         <h2>Ready to Dive In?</h2>
-        <p>Pick a service package below and pay securely via PayPal or credit card. We'll follow up to customize it just for you. Prices start casual—think starter packs for quick wins!</p>
+        <p>Choose a package and pay securely via PayPal or credit card. We'll reach out to customize. Starting simple for quick impact!</p>
         
-        <h3>Starter AI Automation Package - $499</h3>
-        <p>Get basic workflow automation setup. Perfect for small teams.</p>
+        <div class="cards">
+            <div class="card">
+                <h3>Starter AI Automation - $499</h3>
+                <p>Basic setup for workflows. Ideal for starters.</p>
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                    <input type="hidden" name="cmd" value="_xclick">
+                    <input type="hidden" name="business" value="YOUR_PAYPAL_EMAIL">
+                    <input type="hidden" name="item_name" value="Starter AI Automation Package">
+                    <input type="hidden" name="amount" value="499.00">
+                    <input type="hidden" name="currency_code" value="USD">
+                    <input type="hidden" name="return" value="https://your-site.com/thank-you">
+                    <input type="hidden" name="cancel_return" value="https://your-site.com/order">
+                    <input type="submit" value="Pay Now" class="paypal-button">
+                </form>
+            </div>
+            <div class="card">
+                <h3>Pro BI Deep Dive - $999</h3>
+                <p>Advanced analytics and dashboards.</p>
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                    <input type="hidden" name="cmd" value="_xclick">
+                    <input type="hidden" name="business" value="YOUR_PAYPAL_EMAIL">
+                    <input type="hidden" name="item_name" value="Pro BI Deep Dive">
+                    <input type="hidden" name="amount" value="999.00">
+                    <input type="hidden" name="currency_code" value="USD">
+                    <input type="hidden" name="return" value="https://your-site.com/thank-you">
+                    <input type="hidden" name="cancel_return" value="https://your-site.com/order">
+                    <input type="submit" value="Pay Now" class="paypal-button">
+                </form>
+            </div>
+        </div>
         
-        <!-- PayPal Buy Now Button - Replace placeholders! -->
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-            <input type="hidden" name="cmd" value="_xclick">
-            <input type="hidden" name="business" value="YOUR_PAYPAL_EMAIL"> <!-- Replace with your PayPal email -->
-            <input type="hidden" name="item_name" value="Starter AI Automation Package">
-            <input type="hidden" name="amount" value="499.00">
-            <input type="hidden" name="currency_code" value="USD">
-            <input type="hidden" name="return" value="https://your-site.com/thank-you"> <!-- Optional: Success URL -->
-            <input type="hidden" name="cancel_return" value="https://your-site.com/order"> <!-- Optional: Cancel URL -->
-            <input type="submit" value="Pay Now via PayPal or Credit Card" class="paypal-button">
-        </form>
-        
-        <h3>Pro BI Deep Dive - $999</h3>
-        <p>Full analytics dashboard and insights report.</p>
-        
-        <!-- Another PayPal Button Example -->
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-            <input type="hidden" name="cmd" value="_xclick">
-            <input type="hidden" name="business" value="YOUR_PAYPAL_EMAIL">
-            <input type="hidden" name="item_name" value="Pro BI Deep Dive">
-            <input type="hidden" name="amount" value="999.00">
-            <input type="hidden" name="currency_code" value="USD">
-            <input type="hidden" name="return" value="https://your-site.com/thank-you">
-            <input type="hidden" name="cancel_return" value="https://your-site.com/order">
-            <input type="submit" value="Pay Now via PayPal or Credit Card" class="paypal-button">
-        </form>
-        
-        <p>Need something custom? Contact us first, and we'll send a tailored invoice.</p>
+        <p>Custom needs? Hit us up first for a quote.</p>
     </section>
 
     <footer>
